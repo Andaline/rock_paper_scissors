@@ -1,0 +1,35 @@
+name: Python Game CI
+
+on:
+  push:
+    tags:
+      - 'v*'  # trigger on version tags like v1.0.0
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build EXE
+        run: |
+          pyinstaller --onefile --windowed --icon=game/assets/icon.ico main.py
+          mkdir output
+          mv dist/main.exe output/rock_paper_scissors.exe
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: output/rock_paper_scissors.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

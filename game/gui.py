@@ -20,6 +20,12 @@ def launch_gui():
     style = ttk.Style()
     style.theme_use('clam')
 
+    def back_to_menu():
+        root.destroy()
+        import menu
+        menu.MainMenu(tk.Tk()).run()
+
+
     def apply_theme(theme_name):
         theme = THEMES[theme_name]
         root.config(bg=theme["bg"])
@@ -123,6 +129,14 @@ def launch_gui():
     reset_button.bind("<Enter>", on_enter)
     reset_button.bind("<Leave>", on_leave)
 
+    back_button = tk.Button(root, text="Back to Menu", command=back_to_menu,
+                        bg=THEMES[DEFAULT_THEME]["bg"], fg=THEMES[DEFAULT_THEME]["fg"],
+                        activebackground=THEMES[DEFAULT_THEME]["highlight"])
+    back_button.pack(pady=5)
+    back_button.bind("<Enter>", on_enter)
+    back_button.bind("<Leave>", on_leave)
+
+
     round_selector_label = tk.Label(root, text="Best of how many rounds?")
     round_selector_label.pack()
     round_selector = tk.Spinbox(root, from_=1, to=15, width=5, command=set_round_limit)
@@ -132,3 +146,22 @@ def launch_gui():
 
     apply_theme(DEFAULT_THEME)
     root.mainloop()
+
+
+class MultiplayerGUI:
+    def __init__(self, theme="default"):
+        self.root = tk.Tk()
+        self.root.title("Multiplayer - Rock Paper Scissors")
+        self.root.geometry("800x600")
+        self.theme = theme
+        self.setup_ui()
+
+    def setup_ui(self):
+        label = tk.Label(self.root, text="Multiplayer Mode", font=("Helvetica", 24))
+        label.pack(pady=20)
+
+        back_btn = tk.Button(self.root, text="Back to Menu", command=self.back_to_menu)
+        back_btn.pack(pady=10)
+
+    def run(self):
+        self.root.mainloop()
